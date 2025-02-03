@@ -1,14 +1,17 @@
 export default {
 	async fetch(request, env, ctx) {
-		// TODO: Change to wasp.sh when we decide to go live
-		// this is now just testing the redirect from wasp.sh to wasp-lang.dev
-		const redirectToBase = 'https://wasp-lang.dev';
+		if (!env.REDIRECT_TO_DOMAIN) {
+			return new Response('REDIRECT_TO_DOMAIN is not set', {
+				status: 500,
+			});
+		}
+		const redirectToDomain = env.REDIRECT_TO_DOMAIN;
 		const statusCode = 301;
 
 		const url = new URL(request.url);
 		const { pathname, search } = url;
 
-		const destinationURL = `${redirectToBase}${pathname}${search}`;
+		const destinationURL = `${redirectToDomain}${pathname}${search}`;
 
 		return Response.redirect(destinationURL, statusCode);
 	},
